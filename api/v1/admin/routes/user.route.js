@@ -3,33 +3,33 @@ const router = express.Router();
 const controller = require("../controllers/user.controller");
 const { authJwt, verifySignUp } = require("../../../../middlewares");
 
-router.post("/create-super-admin", controller.createSuperAdmin); // create super admin
+router.post("/create-admin", controller.createAdmin); // create super admin
 router.get(
   "/roles",
-  [authJwt.verifyToken, authJwt.isSuperAdmin],
+  [authJwt.verifyToken, authJwt.isAdmin],
   controller.getAllRoles
 );
 router.get(
   "/",
-  [authJwt.verifyToken, authJwt.isSuperAdmin],
+  [authJwt.verifyToken, authJwt.isAdmin],
   controller.readAllUsers
 );
 router.get(
   "/:userId",
-  [authJwt.verifyToken, authJwt.isSuperAdmin],
+  [authJwt.verifyToken, authJwt.isAdmin],
   controller.readUserById
 );
 router.post(
   "/change-password",
-  [authJwt.verifyToken, authJwt.isSuperAdmin],
+  [authJwt.verifyToken, authJwt.isAdmin],
   controller.changePassword
 );
 router.post(
   "/",
   [
     authJwt.verifyToken,
-    authJwt.isSuperAdmin,
-    verifySignUp.checkDuplicateEmail,
+    authJwt.isAdmin,
+    verifySignUp.checkDuplicatePhone,
     verifySignUp.checkRolesExisted,
   ],
   controller.createNewUser
@@ -37,13 +37,13 @@ router.post(
 
 router.put(
   "/",
-  [authJwt.verifyToken, authJwt.isSuperAdmin, verifySignUp.checkRolesExisted],
+  [authJwt.verifyToken, authJwt.isAdmin, verifySignUp.checkRolesExisted],
   controller.update
 );
 
 router.post(
   "/delete",
-  [authJwt.verifyToken, authJwt.isSuperAdmin],
+  [authJwt.verifyToken, authJwt.isAdmin],
   controller.delete
 );
 

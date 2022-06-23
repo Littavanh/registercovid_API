@@ -2,29 +2,51 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable(
-      "users",
+      "vaccinationSites",
       {
         id: {
           allowNull: false,
-          autoIncrement: false,
+          autoIncrement: true,
           primaryKey: true,
-          type: Sequelize.UUID,
-          collate: "utf8_bin",
+          type: Sequelize.INTEGER,
         },
-        phone: {
+        provinceId: {
+          allowNull: true,
+          type: Sequelize.INTEGER,
+          references: {
+            model: "provinces",
+            key: "id",
+          },
+          onDelete: "SET NULL",
+        },
+        districtId: {
+          allowNull: true,
+          type: Sequelize.INTEGER,
+          references: {
+            model: "districts",
+            key: "id",
+          },
+          onDelete: "SET NULL",
+        },
+        village:{
           type: Sequelize.STRING(100),
           allowNull: false,
-          unique: true,
         },
-        password: {
-          type: Sequelize.STRING(128),
+        name: {
+          type: Sequelize.STRING(100),
           allowNull: false,
+        },
+        status: {
+          allowNull: false,
+          type: Sequelize.ENUM,
+          values: ["closed", "opened"],
+          
         },
         isDelete: {
           allowNull: false,
           type: Sequelize.ENUM,
           values: ["no", "yes"],
-          defaultValue: "no",
+          default: "no",
         },
         createdAt: {
           allowNull: false,
@@ -44,6 +66,6 @@ module.exports = {
     );
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("users");
+    await queryInterface.dropTable("vaccinationSites");
   },
 };

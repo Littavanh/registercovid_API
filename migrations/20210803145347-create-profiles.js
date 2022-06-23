@@ -37,6 +37,10 @@ module.exports = {
           type: Sequelize.STRING(50),
           allowNull: false,
         },
+        birthDate:{
+          allowNull: false,
+          type: Sequelize.DATEONLY,
+        },
         provinceId: {
           allowNull: true,
           type: Sequelize.INTEGER,
@@ -69,15 +73,22 @@ module.exports = {
           type: Sequelize.DATE,
           defaultValue: Sequelize.fn("NOW"),
         },
-        createdBy: {
+        relation: {
           allowNull: false,
-          type: Sequelize.UUID,
-          collate: "utf8_bin",
+          type: Sequelize.ENUM,
+          values: ["ໂສດ", "ແຕ່ງງານ","ອື່ນໆ"],
+          
+        }, job: {
+          allowNull: false,
+          type: Sequelize.STRING(100),
+
+          
         },
-        updatedBy: {
+        isDelete: {
           allowNull: false,
-          type: Sequelize.UUID,
-          collate: "utf8_bin",
+          type: Sequelize.ENUM,
+          values: ["no", "yes"],
+          default: "no",
         },
       },
       {

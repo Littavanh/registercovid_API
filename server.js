@@ -13,6 +13,9 @@ const loginRoutes = require("./api/v1/routes/login.route");
 const userRoutes = require("./api/v1/admin/routes/user.route");
 const provinceRoutes = require("./api/v1/routes/province.route");
 const districtRoutes = require("./api/v1/routes/district.route");
+const postRoutes = require("./api/v1/routes/post.route");
+const registerRoutes = require("./api/v1/routes/user.route");
+const vaccineRoutes = require("./api/v1/routes/vaccine.route");
 // ----- Import Routes End ----- //
 
 // const corsOptions = {
@@ -36,6 +39,9 @@ app.use("/api/v1/login", loginRoutes);
 app.use("/api/v1/admin/users", userRoutes);
 app.use("/api/v1/provinces", provinceRoutes);
 app.use("/api/v1/districts", districtRoutes);
+app.use("/api/v1/posts",postRoutes );
+app.use("/api/v1/users", registerRoutes);
+app.use("/api/v1/vaccines", vaccineRoutes);
 // ----- Route End ----- //
 
 app.use((req, res, next) => {
@@ -60,5 +66,5 @@ const server = http.createServer(app);
 
 server.listen(
   PORT,
-  console.log(`Autotrade System API Server started on port ${PORT}`)
+  console.log(`RegisterCovid System API Server started on port ${PORT}`)
 );

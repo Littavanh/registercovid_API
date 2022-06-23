@@ -3,16 +3,16 @@ const Op = db.Sequelize.Op;
 const User = db.User;
 const Role = db.Role;
 
-checkDuplicateEmail = async (req, res, next) => {
+checkDuplicatePhone = async (req, res, next) => {
   const user = await User.findOne({
     where: {
-      email: req.body.email,
+      phone: req.body.phone,
     },
   });
 
   if (user) {
     res.status(400).send({
-      message: "ອີເມວຊໍ້າ",
+      message: "ເບີຊໍ້າ",
     });
     return;
   }
@@ -40,7 +40,7 @@ checkRolesExisted = async (req, res, next) => {
 };
 
 const verifySignUp = {
-  checkDuplicateEmail: checkDuplicateEmail,
+  checkDuplicatePhone: checkDuplicatePhone,
   checkRolesExisted: checkRolesExisted,
 };
 

@@ -2,29 +2,28 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable(
-      "users",
+      "vaccines",
       {
         id: {
           allowNull: false,
-          autoIncrement: false,
+          autoIncrement: true,
           primaryKey: true,
-          type: Sequelize.UUID,
-          collate: "utf8_bin",
+          type: Sequelize.INTEGER,
         },
-        phone: {
+       
+        name: {
           type: Sequelize.STRING(100),
           allowNull: false,
-          unique: true,
         },
-        password: {
-          type: Sequelize.STRING(128),
+        vaccinetype: {
+          type: Sequelize.STRING(100),
           allowNull: false,
         },
         isDelete: {
           allowNull: false,
           type: Sequelize.ENUM,
           values: ["no", "yes"],
-          defaultValue: "no",
+          default: "no",
         },
         createdAt: {
           allowNull: false,
@@ -44,6 +43,6 @@ module.exports = {
     );
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("users");
+    await queryInterface.dropTable("vaccines");
   },
 };

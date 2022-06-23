@@ -48,14 +48,16 @@ db.Sequelize = Sequelize;
 db.User = require("./user")(sequelize, Sequelize);
 db.Role = require("./role")(sequelize, Sequelize);
 db.Province = require("./province")(sequelize, Sequelize);
+db.Post = require("./posts")(sequelize, Sequelize);
 db.District = require("./district")(sequelize, Sequelize);
 db.Profile = require("./profile")(sequelize, Sequelize);
+db.Vaccine = require("./vaccine")(sequelize, Sequelize);
 // -------------------------- Import Tables
 
 // -------------------------- Relationships
 db.User.hasOne(db.Profile, {
   foreignKey: "userId",
-  as: "Profile",
+ 
 });
 db.User.belongsToMany(db.Role, {
   through: "user_roles",
@@ -73,5 +75,17 @@ db.District.belongsTo(db.Province, {
   foreignKey: "provinceId",
   as: "province",
 });
+db.Province.hasMany(db.Profile, {
+  foreignKey: "provinceId"
+});
+db.Profile.belongsTo(db.Province, {
+  foreignKey: "provinceId"
+});
 
+db.District.hasMany(db.Profile, {
+  foreignKey: "districtId"
+});
+db.Profile.belongsTo(db.District, {
+  foreignKey: "districtId"
+});
 module.exports = db;

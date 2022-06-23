@@ -18,13 +18,15 @@ module.exports = (sequelize, DataTypes) => {
       lastname: DataTypes.STRING,
       gender: DataTypes.STRING,
       phone: DataTypes.STRING,
+      birthDate:DataTypes.DATE,
       provinceId: DataTypes.INTEGER,
       districtId: DataTypes.INTEGER,
       village: DataTypes.STRING,
+      relation: DataTypes.STRING,
+      job: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
-      createdBy: DataTypes.UUID,
-      updatedBy: DataTypes.UUID,
+      
     },
     {
       sequelize,
