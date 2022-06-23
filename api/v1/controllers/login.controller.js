@@ -61,7 +61,7 @@ module.exports = {
          
           roles: authorities,
           accessToken: token,
-          // expiresIn: 3600 * 24,
+          // expi: 3600 * 24,
         });
       })
       .catch((err) => {
