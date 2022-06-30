@@ -33,7 +33,38 @@ module.exports = {
       next(error);
     }
   },
+  getAllDistrict: async (req, res, next) => {
+    
 
+    try {
+      let districts = await District.findAll({
+        where: {
+          
+          isDelete: "no",
+        },
+        include: {
+          model: Province,
+          foreignKey: "provinceId",
+          as: "province",
+          attributes: ["id", "name", "section"],
+        },
+        
+        order: [["id", "ASC"]],
+      });
+
+      if (!districts || districts.length === 0) {
+        const error = new Error("ຍັງບໍ່ມີຂໍ້ມູນ");
+        error.status = 403;
+        throw error;
+      }
+
+      res.status(200).json({
+        districts,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
   createNewDistrict: async (req, res, next) => {
     const { provinceId, name } = req.body;
 

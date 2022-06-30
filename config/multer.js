@@ -14,7 +14,7 @@ module.exports = multerConfig = {
       destination: (req, file, next) => {
         const folder = "./uploads/images/";
         if (!fs.existsSync(folder)) {
-          fs.mkdirSync(folder);
+          fs.mkdirSync(folder, {recursive: true});
         }
         next(null, folder);
       },

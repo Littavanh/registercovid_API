@@ -4,6 +4,11 @@ const controller = require("../controllers/district.controller");
 const { authJwt } = require("../../../middlewares");
 
 router.get(
+  "/",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.getAllDistrict
+); //
+router.get(
   "/:provinceId",
   [authJwt.verifyToken, authJwt.isAdmin],
   controller.getAllDistrictByProvinceId
