@@ -52,6 +52,7 @@ db.Post = require("./posts")(sequelize, Sequelize);
 db.District = require("./district")(sequelize, Sequelize);
 db.Profile = require("./profile")(sequelize, Sequelize);
 db.Vaccine = require("./vaccine")(sequelize, Sequelize);
+db.Vaccinationsites = require("./vaccinationsites")(sequelize, Sequelize);
 // -------------------------- Import Tables
 
 // -------------------------- Relationships
@@ -87,5 +88,9 @@ db.District.hasMany(db.Profile, {
 });
 db.Profile.belongsTo(db.District, {
   foreignKey: "districtId"
+});
+db.Vaccinationsites.belongsTo(db.Province, {
+  foreignKey: "provinceId",
+  as: "province",
 });
 module.exports = db;

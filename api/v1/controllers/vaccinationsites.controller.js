@@ -1,22 +1,15 @@
-const { District } = require("../../../models");
 const db = require("../../../models");
-const { Vaccsite, Province } = db;
+const {Vaccinationsites ,Province} = db;
 
 module.exports = {
-  getAllVaccsiteByProvinceId: async (req, res, next) => {
+  getAllVaccinationsitesByProvinceId: async (req, res, next) => {
     const provinceId = req.params.provinceId;
-    const districtId = req.params.districtId;
 
     try {
-      let vaccinationtes = await Vaccsite.findAll({
+      let vacsites = await Vaccinationsites.findAll({
         where: {
           provinceId: provinceId,
           isDelete: "no",
-        },
-          where: {
-            districtId: districtId,
-            isDelete: "no",
-          
         },
         include: {
           model: Province,
@@ -25,45 +18,68 @@ module.exports = {
           attributes: ["id", "name", "section"],
         },
         order: [["id", "ASC"]],
-        include: {
-            model: District,
-            foreignKey: "districtId",
-            ad: "district",
-            attributes: ["id", "name", ],
-        },
       });
 
-      if (!vaccinationtes || vaccinationtes.length === 0) {
+      if (!vacsites || vacsites.length === 0) {
         const error = new Error("ຍັງບໍ່ມີຂໍ້ມູນ");
         error.status = 403;
         throw error;
       }
 
       res.status(200).json({
-        vaccinationtes,
+        vacsites,
       });
     } catch (error) {
       next(error);
     }
   },
+  getAllVaccinationsites: async (req, res, next) => {
+    
 
-  createNewVaccsitet: async (req, res, next) => {
+    try {
+      let vacsites = await Vaccinationsites.findAll({
+        where: {
+          
+          isDelete: "no",
+        },
+        include: {
+          model: Province,
+          foreignKey: "provinceId",
+          as: "province",
+          attributes: ["id", "name", "section"],
+        },
+        
+        order: [["id", "ASC"]],
+      });
+
+      if (!vacsites || vacsites.length === 0) {
+        const error = new Error("ຍັງບໍ່ມີຂໍ້ມູນ");
+        error.status = 403;
+        throw error;
+      }
+
+      res.status(200).json({
+        vacsites,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  createNewVaccinationsites: async (req, res, next) => {
     const { provinceId, name } = req.body;
 
     const t = await db.sequelize.transaction();
 
     try {
-      let vaccsite = await Vaccsite.create(
+      let Vaccinationsites = await Vaccinationsites.create(
         {
           provinceId,
           name,
         },
-        
         { transaction: t }
-        
       );
 
-      if (!vaccsite) {
+      if (!Vaccinationsites) {
         const error = new Error("ໃສ່ຂໍ້ມູນບໍ່ຄົບ");
         error.status = 403;
         throw error;
@@ -80,26 +96,26 @@ module.exports = {
     }
   },
 
-  updateVaccsiteById: async (req, res, next) => {
-    const { vaccsiteId, provinceId, name } = req.body;
+  updateVaccinationsitesById: async (req, res, next) => {
+    const { VaccinationsitesId, provinceId, name } = req.body;
 
     const t = await db.sequelize.transaction();
 
     try {
-      let district = await District.findOne(
+      let Vaccinationsites = await Vaccinationsites.findOne(
         {
-          where: { id: vaccsiteId, provinceId },
+          where: { id: VaccinationsitesId, provinceId },
         },
         { transaction: t }
       );
 
-      if (!vaccsite) {
+      if (!Vaccinationsites) {
         const error = new Error("ບໍ່ພົບຂໍ້ມູນ");
         error.status = 404;
         throw error;
       }
 
-      await vaccsite.update(
+      await Vaccinationsites.update(
         {
           provinceId,
           name,
@@ -118,26 +134,26 @@ module.exports = {
     }
   },
 
-  deleteVaccsiteById: async (req, res, next) => {
-    const { vaccsiteId, provinceId } = req.body;
+  deleteVaccinationsitesById: async (req, res, next) => {
+    const { VaccinationsitesId, provinceId } = req.body;
 
     const t = await db.sequelize.transaction();
 
     try {
-      let vaccsite = await Vaccsite.findOne(
+      let Vaccinationsites = await Vaccinationsites.findOne(
         {
-          where: { id: vaccsiteId, provinceId },
+          where: { id: VaccinationsitesId, provinceId },
         },
         { transaction: t }
       );
 
-      if (!vaccsite || vaccsite.isDelete === "yes") {
+      if (!Vaccinationsites || Vaccinationsites.isDelete === "yes") {
         const error = new Error("ບໍ່ພົບຂໍ້ມູນ");
         error.status = 404;
         throw error;
       }
 
-      await vaccsite.update(
+      await Vaccinationsites.update(
         {
           isDelete: "yes",
         },

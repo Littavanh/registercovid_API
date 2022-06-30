@@ -1,27 +1,32 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/vaccsite.controller");
+const controller = require("../controllers/vaccinationsites.controller");
 const { authJwt } = require("../../../middlewares");
 
 router.get(
+  "/",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.getAllVaccinationsites
+); //
+router.get(
   "/:provinceId",
   [authJwt.verifyToken, authJwt.isAdmin],
-  controller.getAllVaccsitetByProvinceId
+  controller.getAllVaccinationsitesByProvinceId
 ); // get all provinces
 router.post(
   "/",
   [authJwt.verifyToken, authJwt.isAdmin],
-  controller.createNewVaccsite
+  controller.createNewVaccinationsites
 ); // create new province
 router.put(
   "/",
   [authJwt.verifyToken, authJwt.isAdmin],
-  controller.updateVaccsiteById
+  controller.updateVaccinationsitesById
 ); // update province data
 router.post(
   "/delete",
   [authJwt.verifyToken, authJwt.isAdmin],
-  controller.deleteVaccsiteById
+  controller.deleteVaccinationsitesById
 ); // delete province
 
 module.exports = router;

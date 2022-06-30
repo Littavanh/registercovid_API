@@ -19,28 +19,16 @@ module.exports = {
           },
           onDelete: "SET NULL",
         },
-        districtId: {
-          allowNull: true,
-          type: Sequelize.INTEGER,
-          references: {
-            model: "districts",
-            key: "id",
-          },
-          onDelete: "SET NULL",
-        },
-        village:{
-          type: Sequelize.STRING(100),
-          allowNull: false,
-        },
+       
         name: {
           type: Sequelize.STRING(100),
           allowNull: false,
         },
-        status: {
+        vaccsitestatus: {
           allowNull: false,
           type: Sequelize.ENUM,
-          values: ["closed", "opened"],
-          
+          values: ["opened", "closed"],
+          default: "opened",
         },
         isDelete: {
           allowNull: false,

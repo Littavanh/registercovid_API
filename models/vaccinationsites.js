@@ -1,8 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
-const vaccinationtes = require("../api/v1/controllers/vaccinationsite");
+
 module.exports = (sequelize, DataTypes) => {
-  class Vaccsite extends Model {
+  class Vaccinationsite extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,28 +12,19 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Vaccsite.init(
+  Vaccinationsite.init(
     {
       provinceId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      districtId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-    
-    village: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
     
     vaccsitestatus: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
       isDelete: DataTypes.STRING,
@@ -43,9 +34,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Vaccinationsite",
-      tableName: "vaccinationtes",
+      tableName: "vaccinationSites",
     }
   );
 
-  return Vaccsite;
+  return Vaccinationsite;
 };

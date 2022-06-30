@@ -16,7 +16,7 @@ const districtRoutes = require("./api/v1/routes/district.route");
 const postRoutes = require("./api/v1/routes/post.route");
 const registerRoutes = require("./api/v1/routes/user.route");
 const vaccineRoutes = require("./api/v1/routes/vaccine.route");
-const vaccsiteRoutes = require(",/api/v1/routes/vaccsite.route");
+const vaccsiteRoutes = require("./api/v1/routes/vaccinationsites.route");
 // ----- Import Routes End ----- //
 
 // const corsOptions = {
