@@ -44,7 +44,7 @@ module.exports = {
     try {
       let vacAmount = amount ? amount : 0;
 
-      let check = await VaccineSiteStorage.findAll(
+      let check = await VaccineSiteStorage.findOne(
         {
           where: {
             vaccineId: vaccineId,
