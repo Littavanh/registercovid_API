@@ -1,25 +1,24 @@
 const db = require("../../../models");
-const {VaccineSiteStorage ,Vaccine,Vaccinationsites} = db;
+const { VaccineSiteStorage, Vaccine, Vaccinationsites } = db;
+const sequelize = db.Sequelize;
 
 module.exports = {
- 
   getAllVaccineSiteStorage: async (req, res, next) => {
-    
-
     try {
       let vacsites = await VaccineSiteStorage.findAll({
-       
         include: [
-          { model: Vaccine,
-          foreignKey: "vaccineId",
-          as: "vaccine",
-          attributes: ["id", "name"],},
+          {
+            model: Vaccine,
+            foreignKey: "vaccineId",
+            as: "vaccine",
+            attributes: ["id", "name"],
+          },
           {
             model: Vaccinationsites,
             foreignKey: "vaccinationSiteId",
             as: "vaccinationsites",
             attributes: ["id", "name"],
-          }
+          },
         ],
         order: [["id", "ASC"]],
       });
@@ -29,7 +28,6 @@ module.exports = {
         error.status = 403;
         throw error;
       }
-      
 
       res.status(200).json({
         vacsites,
@@ -39,51 +37,53 @@ module.exports = {
     }
   },
   createNewVaccineSiteStorage: async (req, res, next) => {
-    const { vaccineId, vaccinationSiteId , level , amount } = req.body;
+    const { vaccineId, vaccinationSiteId, level, amount } = req.body;
 
     const t = await db.sequelize.transaction();
 
     try {
+      let vacAmount = amount ? amount : 0;
+
       let check = await VaccineSiteStorage.findAll(
         {
-          where: { vaccineId: vaccineId, vaccinationSiteId:vaccinationSiteId,level:level },
-        },
-        {transaction: t}
-        );
-        if (!check) {
-          let vac = await VaccineSiteStorage.create(
-            {
-              vaccineId,
-              vaccinationSiteId,
-              level,
-              amount
-            },
-            { transaction: t }
-          );
-    
-          if (!vac) {
-            const error = new Error("ໃສ່ຂໍ້ມູນບໍ່ຄົບ");
-            error.status = 403;
-            throw error;
-          }
-    
-    
-          await t.commit();
-    
-          res.status(201).json({
-            message: "ການເພີ່ມສໍາເລັດ",
-          });
-        }
-  
-        await VaccineSiteStorage.update(
-          {
-            amount:Sequelize.literal(`amount + ${element.amount}`)
+          where: {
+            vaccineId: vaccineId,
+            vaccinationSiteId: vaccinationSiteId,
+            level: level,
           },
-          { where : {id: VaccineSiteStorage.id} }
+        },
+        { transaction: t }
+      );
+      if (!check || check.length === 0) {
+        let vac = await VaccineSiteStorage.create(
+          {
+            vaccineId,
+            vaccinationSiteId,
+            level,
+            amount,
+          },
+          { transaction: t }
         );
-  
-       
-      
+
+        if (!vac) {
+          const error = new Error("ໃສ່ຂໍ້ມູນບໍ່ຄົບ");
+          error.status = 403;
+          throw error;
+        }
+      } else {
+        await check.update(
+          {
+            amount: sequelize.literal(`amount + ${vacAmount}`),
+          },
+          { transaction: t }
+        );
+      }
+
+      await t.commit();
+
+      res.status(200).json({
+        message: "ຈັດການວັກຊີນສໍາເລັດ",
+      });
     } catch (error) {
       await t.rollback();
       next(error);
