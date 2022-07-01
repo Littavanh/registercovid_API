@@ -13,7 +13,7 @@ module.exports = {
           primaryKey: true,
           type: Sequelize.INTEGER,
         },
-        vaacineId: {
+        vaccineId: {
           allowNull: false,
           type: Sequelize.INTEGER,
           collate: "utf8_bin",
@@ -47,9 +47,18 @@ module.exports = {
           allowNull: false,
           type: Sequelize.ENUM,
           values: ["Available", "Unavailable"],
-          
-        }
-       
+          default: "Available",
+        },
+        createdAt: {
+          allowNull: false,
+          type: Sequelize.DATE,
+          defaultValue: Sequelize.fn("NOW"),
+        },
+        updatedAt: {
+          allowNull: false,
+          type: Sequelize.DATE,
+          defaultValue: Sequelize.fn("NOW"),
+        },
       
     },
       {
@@ -59,6 +68,6 @@ module.exports = {
     );
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("districts");
+    await queryInterface.dropTable("vaccineSiteStorages");
   },
 };

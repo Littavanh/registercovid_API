@@ -1,3 +1,4 @@
+const { sequelize } = require("../../../models");
 const db = require("../../../models");
 const { District, Province } = db;
 
@@ -37,6 +38,8 @@ module.exports = {
     
 
     try {
+      // let districts = await sequelize.query('SELECT * FROM districts ');
+
       let districts = await District.findAll({
         where: {
           

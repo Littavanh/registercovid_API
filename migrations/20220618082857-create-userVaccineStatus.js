@@ -67,6 +67,6 @@ module.exports = {
     );
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("districts");
+    await queryInterface.dropTable("userVaccineStatus");
   },
 };

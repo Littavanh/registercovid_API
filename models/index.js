@@ -53,6 +53,7 @@ db.District = require("./district")(sequelize, Sequelize);
 db.Profile = require("./profile")(sequelize, Sequelize);
 db.Vaccine = require("./vaccine")(sequelize, Sequelize);
 db.Vaccinationsites = require("./vaccinationsites")(sequelize, Sequelize);
+db.VaccineSiteStorage = require("./vaccinesitestorage")(sequelize, Sequelize);
 // -------------------------- Import Tables
 
 // -------------------------- Relationships
@@ -93,4 +94,15 @@ db.Vaccinationsites.belongsTo(db.Province, {
   foreignKey: "provinceId",
   as: "province",
 });
+
+db.VaccineSiteStorage.belongsTo(db.Vaccine, {
+  foreignKey: "vaccineId",
+  as: "vaccine",
+});
+
+db.VaccineSiteStorage.belongsTo(db.Vaccinationsites, {
+  foreignKey: "vaccinationSiteId",
+  as: "vaccinationsites",
+});
+
 module.exports = db;

@@ -17,6 +17,7 @@ const postRoutes = require("./api/v1/routes/post.route");
 const registerRoutes = require("./api/v1/routes/user.route");
 const vaccineRoutes = require("./api/v1/routes/vaccine.route");
 const vaccsiteRoutes = require("./api/v1/routes/vaccinationsites.route");
+const vaccsiteStorageRoutes = require("./api/v1/routes/vaccinesitestorage.route");
 // ----- Import Routes End ----- //
 
 // const corsOptions = {
@@ -44,6 +45,7 @@ app.use("/api/v1/posts",postRoutes );
 app.use("/api/v1/users", registerRoutes);
 app.use("/api/v1/vaccines", vaccineRoutes);
 app.use("/api/v1/vaccinationsites", vaccsiteRoutes);
+app.use("/api/v1/vaccinesitestorage", vaccsiteStorageRoutes);
 // ----- Route End ----- //
 
 app.use((req, res, next) => {
