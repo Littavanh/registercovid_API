@@ -23,10 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
     
-    vaccsitestatus: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    vaccsitestatus: DataTypes.STRING,
       isDelete: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,

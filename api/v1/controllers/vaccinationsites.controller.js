@@ -71,7 +71,7 @@ module.exports = {
     const t = await db.sequelize.transaction();
 
     try {
-      let Vaccinationsites = await Vaccinationsites.create(
+      let vac = await Vaccinationsites.create(
         {
           provinceId,
           name,
@@ -79,7 +79,7 @@ module.exports = {
         { transaction: t }
       );
 
-      if (!Vaccinationsites) {
+      if (!vac) {
         const error = new Error("ໃສ່ຂໍ້ມູນບໍ່ຄົບ");
         error.status = 403;
         throw error;
@@ -97,25 +97,25 @@ module.exports = {
   },
 
   updateVaccinationsitesById: async (req, res, next) => {
-    const { VaccinationsitesId, provinceId, name } = req.body;
+    const { id, provinceId, name } = req.body;
 
     const t = await db.sequelize.transaction();
 
     try {
-      let Vaccinationsites = await Vaccinationsites.findOne(
+      let vac = await Vaccinationsites.findOne(
         {
-          where: { id: VaccinationsitesId, provinceId },
+          where: { id: id, provinceId },
         },
         { transaction: t }
       );
 
-      if (!Vaccinationsites) {
+      if (!vac) {
         const error = new Error("ບໍ່ພົບຂໍ້ມູນ");
         error.status = 404;
         throw error;
       }
 
-      await Vaccinationsites.update(
+      await vac.update(
         {
           provinceId,
           name,
@@ -135,25 +135,25 @@ module.exports = {
   },
 
   deleteVaccinationsitesById: async (req, res, next) => {
-    const { VaccinationsitesId, provinceId } = req.body;
+    const { id, provinceId } = req.body;
 
     const t = await db.sequelize.transaction();
 
     try {
-      let Vaccinationsites = await Vaccinationsites.findOne(
+      let vac = await Vaccinationsites.findOne(
         {
-          where: { id: VaccinationsitesId, provinceId },
+          where: { id: id, provinceId },
         },
         { transaction: t }
       );
 
-      if (!Vaccinationsites || Vaccinationsites.isDelete === "yes") {
+      if (!vac || vac.isDelete === "yes") {
         const error = new Error("ບໍ່ພົບຂໍ້ມູນ");
         error.status = 404;
         throw error;
       }
 
-      await Vaccinationsites.update(
+      await vac.update(
         {
           isDelete: "yes",
         },
