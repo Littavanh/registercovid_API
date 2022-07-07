@@ -54,6 +54,7 @@ db.Profile = require("./profile")(sequelize, Sequelize);
 db.Vaccine = require("./vaccine")(sequelize, Sequelize);
 db.Vaccinationsites = require("./vaccinationsites")(sequelize, Sequelize);
 db.VaccineSiteStorage = require("./vaccinesitestorage")(sequelize, Sequelize);
+db.Reserve = require("./reserve")(sequelize, Sequelize);
 // -------------------------- Import Tables
 
 // -------------------------- Relationships
@@ -103,6 +104,34 @@ db.VaccineSiteStorage.belongsTo(db.Vaccine, {
 db.VaccineSiteStorage.belongsTo(db.Vaccinationsites, {
   foreignKey: "vaccinationSiteId",
   as: "vaccinationsites",
+});
+
+
+db.Vaccine.hasMany(db.Reserve, {
+  foreignKey: "vaccineId",
+});
+db.Reserve.belongsTo(db.Vaccine, {
+  foreignKey: "vaccineId",
+});
+
+db.Vaccinationsites.hasMany(db.Reserve, {
+  foreignKey: "vaccinationSiteId",
+});
+db.Reserve.belongsTo(db.Vaccinationsites, {
+  foreignKey: "vaccinationSiteId",
+});
+db.Profile.hasMany(db.Reserve, {
+  foreignKey: "userId",
+});
+db.Reserve.belongsTo(db.Profile, {
+  foreignKey: "userId",
+});
+
+db.User.hasMany(db.Reserve, {
+  foreignKey: "userId",
+});
+db.Reserve.belongsTo(db.User, {
+  foreignKey: "userId",
 });
 
 module.exports = db;

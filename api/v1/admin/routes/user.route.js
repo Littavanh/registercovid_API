@@ -16,7 +16,7 @@ router.get(
 );
 router.get(
   "/:userId",
-  [authJwt.verifyToken, authJwt.isAdmin],
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.readUserById
 );
 router.post(
@@ -27,8 +27,8 @@ router.post(
 router.post(
   "/",
   [
-    authJwt.verifyToken,
-    authJwt.isAdmin,
+    // authJwt.verifyToken,
+    // authJwt.isAdmin,
     verifySignUp.checkDuplicatePhone,
     verifySignUp.checkRolesExisted,
   ],

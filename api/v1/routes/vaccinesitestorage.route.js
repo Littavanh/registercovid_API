@@ -8,7 +8,11 @@ router.get(
   [authJwt.verifyToken, authJwt.isAdmin],
   controller.getAllVaccineSiteStorage
 ); //
-
+router.get(
+  "/CheckVacsiteOpen",
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
+  controller.getCheckVacsiteOpen
+);
 router.post(
   "/",
   [authJwt.verifyToken, authJwt.isAdmin],

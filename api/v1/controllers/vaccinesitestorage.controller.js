@@ -36,6 +36,36 @@ module.exports = {
       next(error);
     }
   },
+
+  getCheckVacsiteOpen: async (req, res, next) => {
+    try {
+      let vacsites = await VaccineSiteStorage.findAll({
+        include: [
+
+          {
+            model: Vaccinationsites,
+            foreignKey: "vaccinationSiteId",
+            as: "vaccinationsites",
+            attributes: ["id", "name"],
+            
+          },
+        ],
+        order: [["id", "ASC"]],
+      });
+
+      if (!vacsites || vacsites.length === 0) {
+        const error = new Error("ຍັງບໍ່ມີຂໍ້ມູນ");
+        error.status = 403;
+        throw error;
+      }
+
+      res.status(200).json({
+        vacsites,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
   createNewVaccineSiteStorage: async (req, res, next) => {
     const { vaccineId, vaccinationSiteId, level, amount } = req.body;
 
