@@ -18,7 +18,9 @@ module.exports = {
             foreignKey: "vaccinationSiteId",
             as: "vaccinationsites",
             attributes: ["id","provinceId", "name"],
+            
           },
+          
         ],
         order: [["id", "ASC"]],
       });

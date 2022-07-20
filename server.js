@@ -56,6 +56,33 @@ app.use((req, res, next) => {
   next(error);
 });
 
+const PORT = process.env.PORT || 5000;
+
+const server = http.createServer(app);
+const socket = require("socket.io")(server);
+const room = "#notification";
+
+socket.on("connect", async (client) => {
+  await client.join(room);
+
+  client.on("promotion", (data) => {
+    socket.to(room).emit("prm_msg", { data: data });
+  });
+
+  client.on("post", (data) => {
+    socket.to(room).emit("post_msg", { data: data });
+  });
+
+  client.on("notifi", (data) => {
+    socket.to(room).emit("notifi_msg", { data: data });
+  });
+
+  client.on("disconnect", async () => {
+    await client.leave(room);
+    await client.leave(client.id);
+  });
+});
+
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
@@ -65,10 +92,6 @@ app.use((error, req, res, next) => {
     },
   });
 });
-
-const PORT = process.env.PORT || 5000;
-
-const server = http.createServer(app);
 
 server.listen(
   PORT,
