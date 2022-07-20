@@ -5,8 +5,18 @@ const { authJwt } = require("../../../middlewares");
 
 router.get(
   "/",
-  [authJwt.verifyToken, authJwt.isAdmin],
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.getAllVaccineSiteStorage
+); 
+router.get(
+  "/:level",
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
+  controller.getVacsiteByLevel
+); //
+router.get(
+  "/provinceId/:provinceId",
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
+  controller.getVacsiteByProvinceId
 ); //
 router.get(
   "/CheckVacsiteOpen",
@@ -15,7 +25,7 @@ router.get(
 );
 router.post(
   "/",
-  [authJwt.verifyToken, authJwt.isAdmin],
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.createNewVaccineSiteStorage
 ); // create new province
 // router.put(

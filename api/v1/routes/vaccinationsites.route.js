@@ -5,27 +5,27 @@ const { authJwt } = require("../../../middlewares");
 
 router.get(
   "/",
-  [authJwt.verifyToken, authJwt.isAdmin],
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.getAllVaccinationsites
 ); //
 router.get(
   "/:provinceId",
-  [authJwt.verifyToken, authJwt.isAdmin],
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.getAllVaccinationsitesByProvinceId
 ); // get all provinces
 router.post(
   "/",
-  [authJwt.verifyToken, authJwt.isAdmin],
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.createNewVaccinationsites
 ); // create new province
 router.put(
   "/",
-  [authJwt.verifyToken, authJwt.isAdmin],
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.updateVaccinationsitesById
 ); // update province data
 router.post(
   "/delete",
-  [authJwt.verifyToken, authJwt.isAdmin],
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.deleteVaccinationsitesById
 ); // delete province
 

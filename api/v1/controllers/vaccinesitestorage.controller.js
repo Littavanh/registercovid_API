@@ -17,7 +17,7 @@ module.exports = {
             model: Vaccinationsites,
             foreignKey: "vaccinationSiteId",
             as: "vaccinationsites",
-            attributes: ["id", "name"],
+            attributes: ["id","provinceId", "name"],
           },
         ],
         order: [["id", "ASC"]],
@@ -119,7 +119,86 @@ module.exports = {
       next(error);
     }
   },
+  getVacsiteByLevel: async (req, res, next) => {
+    const level = req.params.level;
 
+    try {
+      let vacsites = await VaccineSiteStorage.findAll({
+        where: {
+          level: level,
+          
+        },
+        include: [
+          {
+            model: Vaccine,
+            foreignKey: "vaccineId",
+            as: "vaccine",
+            attributes: ["id", "name"],
+          },
+          {
+            model: Vaccinationsites,
+            foreignKey: "vaccinationSiteId",
+            as: "vaccinationsites",
+            attributes: ["id", "name"],
+          },
+        ],
+        order: [["id", "ASC"]],
+      });
+
+      if (!vacsites || vacsites.length === 0) {
+        const error = new Error("ຍັງບໍ່ມີຂໍ້ມູນ");
+        error.status = 403;
+        throw error;
+      }
+
+      res.status(200).json({
+        vacsites,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+
+  getVacsiteByProvinceId: async (req, res, next) => {
+    const provinceId = req.params.provinceId;
+
+    try {
+      let vacsites = await VaccineSiteStorage.findAll({
+        where: {
+          provinceId: provinceId,
+          
+        },
+        include: [
+          {
+            model: Vaccine,
+            foreignKey: "vaccineId",
+            as: "vaccine",
+            attributes: ["id", "name"],
+          },
+          {
+            model: Vaccinationsites,
+            foreignKey: "vaccinationSiteId",
+            as: "vaccinationsites",
+            attributes: ["id","provinceId", "name"],
+          },
+        ],
+        order: [["id", "ASC"]],
+      });
+
+      if (!vacsites || vacsites.length === 0) {
+        const error = new Error("ຍັງບໍ່ມີຂໍ້ມູນ");
+        error.status = 403;
+        throw error;
+      }
+
+      res.status(200).json({
+        vacsites,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
   // updateVaccineSiteStorageById: async (req, res, next) => {
   //   const { id, amount } = req.body;
 

@@ -1,8 +1,111 @@
 
 const db = require("../../../models");
-const { Reserve ,Vaccine,Vaccinationsites, User,Profile } = db;
+const { Province,District,Reserve ,Vaccine,Vaccinationsites, User,Profile,VaccineSiteStorage } = db;
+const sequelize = db.Sequelize;
+const Op = db.Sequelize.Op;
 
 module.exports = {
+
+  getReserveNotifications: async (req, res, next) => {
+    try {
+      let reserve = await Reserve.findOne({
+        where: {
+          userId: req.userId,
+          status: "Pending",
+          [Op.and]: [
+            sequelize.where(
+              sequelize.fn("date", sequelize.col("date")),
+              "=",
+              sequelize.fn("CURDATE")
+            ),
+          ],
+        },
+        include: [
+          {
+            model: Vaccine,
+            as: "Vaccine",
+            attributes: ["id", "name"],
+          },
+          {
+            model: Vaccinationsites,
+            foreignKey: "vaccinationSiteId",
+            as: "Vaccinationsite",
+            attributes: ["id", "name"],
+          },
+          
+        ],
+      });
+
+      if (reserve) res.status(200).json({ reserve });
+      else res.status(404).json({ message: "ບໍ່ພົບຂໍ້ມູນ" });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  getAllReserveByUserLogin: async (req, res, next) => {
+    try {
+      const userId = req.userId;
+      const { status } = req.query;
+
+      let isStatus = status ? status : "";
+
+      let reserve = await Reserve.findAll({
+        order: [["createdAt", "DESC"]],
+        where: {
+          status: {
+            [Op.substring]: isStatus,
+          },
+          userId: userId,
+        },
+        include: [
+          
+          {
+            model: User,
+            as: "User",
+            attributes: ["id", "phone"],
+            include: {
+              model: Profile,
+              as: "Profile",
+              attributes: [
+                "id",
+                "firstname",
+                "lastname",
+                "gender",
+                "village",
+              ],
+              include: [
+                {
+                  model: Province,
+                  as: "Province",
+                  attributes: ["id", "name"],
+                },
+                {
+                  model: District,
+                  as: "District",
+                  attributes: ["id", "name"],
+                },
+              ],
+            },
+          },
+          {
+            model: Vaccine,
+            as: "Vaccine",
+            attributes: ["id", "name"],
+          },
+         
+        ],
+      });
+
+      if (reserve != null)
+        res.status(200).json({
+          reserve,
+        });
+      else res.status(404).json({ message: "ບໍ່ພົບຂໍ້ມູນ" });
+    } catch (error) {
+      next(error);
+    }
+  },
     getAllReserve: async (req, res, next) => {
     
 
@@ -65,4 +168,193 @@ module.exports = {
           next(error);
         }
       },
+      createNewReserve: async (req, res, next) => {
+       
+    
+        const t = await db.sequelize.transaction();
+    
+        try {
+          const { userId, vaccineId,vaccinationSiteId,date,level } = req.body;
+
+            let vacAmount =1;
+            let check = await VaccineSiteStorage.findOne(
+              {
+                where:{
+                  vaccineId:vaccineId,
+                  vaccinationSiteId:vaccinationSiteId,
+                  level:level,
+                }
+              },
+            {transaction: t,}
+            );
+            if(check){
+              let reserve = await Reserve.create(
+                {
+                  userId,
+                  vaccineId,
+                  vaccinationSiteId,
+                  date,
+                  level,
+                },
+                { transaction: t }
+              );
+        
+              if (!reserve) {
+                const error = new Error("ໃສ່ຂໍ້ມູນບໍ່ຄົບ");
+                error.status = 403;
+                throw error;
+              }
+              await check.update(
+                {
+                  amount: sequelize.literal(`amount - ${vacAmount}`),
+                },
+                { transaction: t }
+              );
+          
+            await t.commit();
+        
+            res.status(201).json({
+              message: "ການຈອງສໍາເລັດ",
+            });
+            }
+
+
+
+
+
+         
+      
+   
+    
+          
+          
+      
+        } catch (error) {
+          await t.rollback();
+          next(error);
+        }
+      },
+      cancelReserve: async (req, res, next) => {
+        const t = await db.sequelize.transaction();
+    
+        try {
+          const { vaccineId,vaccinationSiteId,level } = req.body;
+          const reserveId = req.params.reserveId;
+        let vacAmount =1;
+        let check = await VaccineSiteStorage.findOne(
+          {
+            where:{
+              vaccineId:vaccineId,
+              vaccinationSiteId:vaccinationSiteId,
+              level:level,
+            }
+          },
+        {transaction: t,}
+        );
+          let reserve = await Reserve.findOne(
+            {
+              where: {
+                id: reserveId,
+                vaccineId:vaccineId,
+                vaccinationSiteId:vaccinationSiteId,
+                level:level,
+                status: {
+                  [Op.ne]: "Cancel",
+                },
+              },
+            },
+            {
+              transaction: t,
+            }
+          );
+    
+          if (!reserve || reserve.length === 0) {
+            const error = new Error("ບໍ່ພົບຂໍ້ມູນ");
+            error.status = 400;
+            throw error;
+          }
+    
+    
+          await reserve.update(
+            {
+              status: "Cancel",
+            },
+            {
+              transaction: t,
+            }
+          );
+    
+
+          await check.update(
+            {
+              amount: sequelize.literal(`amount + ${vacAmount}`),
+            },
+            { transaction: t }
+          );
+
+
+          await t.commit();
+    
+          res.status(200).json({
+            message: "ຍົກເລີກການຈອງສຳເລັດ",
+          });
+        } catch (error) {
+          await t.rollback();
+          next(error);
+        }
+      },
+
+      CompleteReserve: async (req, res, next) => {
+        const t = await db.sequelize.transaction();
+    
+        try {
+         
+          const { id } = req.body;
+
+       
+          let reserve = await Reserve.findOne(
+            {
+              where: {
+                id: id,
+               
+                status: "Pending"
+              },
+            },
+            {
+              transaction: t,
+            }
+          );
+    
+          if (!reserve || reserve.length === 0) {
+            const error = new Error("ບໍ່ພົບຂໍ້ມູນ");
+            error.status = 400;
+            throw error;
+          }
+    
+    
+          await reserve.update(
+            {
+              status: "Complete",
+            },
+           
+            {
+              transaction: t,
+            }
+          );
+    
+
+         
+
+
+          await t.commit();
+    
+          res.status(200).json({
+            message: "ສັກວັກຊີນສຳເລັດ",
+          });
+        } catch (error) {
+          await t.rollback();
+          next(error);
+        }
+      },
+    
 };
