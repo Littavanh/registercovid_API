@@ -162,45 +162,7 @@ module.exports = {
   },
 
 
-  getVacsiteByProvinceId: async (req, res, next) => {
-    const provinceId = req.params.provinceId;
-
-    try {
-      let vacsites = await VaccineSiteStorage.findAll({
-        where: {
-          provinceId: provinceId,
-          
-        },
-        include: [
-          {
-            model: Vaccine,
-            foreignKey: "vaccineId",
-            as: "vaccine",
-            attributes: ["id", "name"],
-          },
-          {
-            model: Vaccinationsites,
-            foreignKey: "vaccinationSiteId",
-            as: "vaccinationsites",
-            attributes: ["id","provinceId", "name"],
-          },
-        ],
-        order: [["id", "ASC"]],
-      });
-
-      if (!vacsites || vacsites.length === 0) {
-        const error = new Error("ຍັງບໍ່ມີຂໍ້ມູນ");
-        error.status = 403;
-        throw error;
-      }
-
-      res.status(200).json({
-        vacsites,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
+  
   // updateVaccineSiteStorageById: async (req, res, next) => {
   //   const { id, amount } = req.body;
 

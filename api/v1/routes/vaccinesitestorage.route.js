@@ -13,11 +13,7 @@ router.get(
   [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.getVacsiteByLevel
 ); //
-router.get(
-  "/provinceId/:provinceId",
-  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
-  controller.getVacsiteByProvinceId
-); //
+
 router.get(
   "/CheckVacsiteOpen",
   [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],

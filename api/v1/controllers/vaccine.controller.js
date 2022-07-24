@@ -1,5 +1,5 @@
 const db = require("../../../models");
-const { Vaccine } = db;
+const { Vaccine, VaccineSiteStorage } = db;
 
 module.exports = {
   getAllVaccines: async (req, res, next) => {
@@ -7,6 +7,36 @@ module.exports = {
       let vaccines = await Vaccine.findAll({
         where: { isDelete: "no" }
         
+      });
+
+      if (!vaccines || vaccines.length === 0) {
+        const error = new Error("ຍັງບໍ່ມີຂໍ້ມູນ");
+        error.status = 403;
+        throw error;
+      }
+
+      res.status(200).json({
+        vaccines,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  getVacFromVacSite: async (req, res, next) => {
+
+    const vaccinationSiteId = req.params.vacSiteId;
+    try {
+      let vaccines = await Vaccine.findAll({
+        where: { isDelete: "no" },
+        include: {
+          model: VaccineSiteStorage,
+          where: {
+            vaccinationSiteId,
+            status: "Available"
+          },
+          required: true
+        }
       });
 
       if (!vaccines || vaccines.length === 0) {

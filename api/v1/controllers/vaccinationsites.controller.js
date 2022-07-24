@@ -1,5 +1,5 @@
 const db = require("../../../models");
-const {Vaccinationsites ,Province} = db;
+const {Vaccinationsites ,Province, VaccineSiteStorage} = db;
 
 module.exports = {
   getAllVaccinationsitesByProvinceId: async (req, res, next) => {
@@ -33,6 +33,49 @@ module.exports = {
       next(error);
     }
   },
+
+  getAvailableVacSite: async (req, res, next) => {
+    const provinceId = req.params.provinceId;
+
+    try {
+      let vacsites = await Vaccinationsites.findAll({
+        where: {
+          provinceId: provinceId,
+          isDelete: "no",
+        },
+        include: [ 
+          {
+            model: Province,
+            foreignKey: "provinceId",
+            as: "province",
+            attributes: ["id", "name", "section"],
+          },
+          {
+            model: VaccineSiteStorage,
+            as: "VaccineSiteStorages",
+            where: {
+              status: "Available"
+            },
+            required: true
+          }
+        ],
+        order: [["id", "ASC"]],
+      });
+
+      if (!vacsites || vacsites.length === 0) {
+        const error = new Error("ຍັງບໍ່ມີຂໍ້ມູນ");
+        error.status = 403;
+        throw error;
+      }
+
+      res.status(200).json({
+        vacsites,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   getAllVaccinationsites: async (req, res, next) => {
     
 

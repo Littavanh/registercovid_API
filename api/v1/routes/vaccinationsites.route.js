@@ -13,6 +13,11 @@ router.get(
   [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.getAllVaccinationsitesByProvinceId
 ); // get all provinces
+router.get(
+  "/available/:provinceId",
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
+  controller.getAvailableVacSite
+); // get all provinces
 router.post(
   "/",
   [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],

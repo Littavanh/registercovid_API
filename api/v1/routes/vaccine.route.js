@@ -8,6 +8,11 @@ router.get(
   // [authJwt.verifyToken, authJwt.isAdmin],
   controller.getAllVaccines
 ); // get all provinces
+router.get(
+  "/:vacSiteId",
+  // [authJwt.verifyToken, authJwt.isAdmin],
+  controller.getVacFromVacSite
+);
 router.post(
   "/",
   [authJwt.verifyToken, authJwt.isAdmin],
