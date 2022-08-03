@@ -10,13 +10,13 @@ module.exports = {
           {
             model: Vaccine,
             foreignKey: "vaccineId",
-            as: "vaccine",
+            as: "Vaccine",
             attributes: ["id", "name"],
           },
           {
             model: Vaccinationsites,
             foreignKey: "vaccinationSiteId",
-            as: "vaccinationsites",
+            as: "Vaccinationsite",
             attributes: ["id","provinceId", "name"],
             
           },

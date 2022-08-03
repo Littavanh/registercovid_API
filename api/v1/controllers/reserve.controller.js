@@ -5,7 +5,68 @@ const sequelize = db.Sequelize;
 const Op = db.Sequelize.Op;
 
 module.exports = {
+  getReserveCompleteByUser: async (req, res, next) => {
+    try {
+      let reserve = await Reserve.findAll({
+        where: {
+          userId: req.userId,
+          status: "Complete",
+         
+       
+        },
+        include: [
+          {
+            model: Vaccine,
+            as: "Vaccine",
+            attributes: ["id", "name"],
+          },
+          {
+            model: Vaccinationsites,
+            foreignKey: "vaccinationSiteId",
+            as: "Vaccinationsite",
+            attributes: ["id", "name"],
+          },
+          
+        ],
+      });
 
+      if (reserve) res.status(200).json({ reserve });
+      else res.status(404).json({ message: "ບໍ່ພົບຂໍ້ມູນ" });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getReservePendingByUser: async (req, res, next) => {
+    try {
+      let reserve = await Reserve.findAll({
+        where: {
+          userId: req.userId,
+          status: "Pending",
+         
+       
+        },
+        include: [
+          {
+            model: Vaccine,
+            as: "Vaccine",
+            attributes: ["id", "name"],
+          },
+          {
+            model: Vaccinationsites,
+            foreignKey: "vaccinationSiteId",
+            as: "Vaccinationsite",
+            attributes: ["id", "name"],
+          },
+          
+        ],
+      });
+
+      if (reserve) res.status(200).json({ reserve });
+      else res.status(404).json({ message: "ບໍ່ພົບຂໍ້ມູນ" });
+    } catch (error) {
+      next(error);
+    }
+  },
   getReserveNotifications: async (req, res, next) => {
     try {
       let reserve = await Reserve.findOne({
@@ -255,12 +316,8 @@ module.exports = {
             {
               where: {
                 id: reserveId,
-                vaccineId:vaccineId,
-                vaccinationSiteId:vaccinationSiteId,
-                level:level,
-                status: {
-                  [Op.ne]: "Cancel",
-                },
+               
+                status: "Pending",
               },
             },
             {

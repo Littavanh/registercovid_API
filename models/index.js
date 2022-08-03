@@ -98,6 +98,7 @@ db.Vaccinationsites.belongsTo(db.Province, {
 
 db.Vaccine.hasMany(db.VaccineSiteStorage, {
   foreignKey: "vaccineId",
+  
 });
 db.VaccineSiteStorage.belongsTo(db.Vaccine, {
   foreignKey: "vaccineId",
