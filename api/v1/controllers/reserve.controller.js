@@ -278,6 +278,11 @@ module.exports = {
               message: "ການຈອງສໍາເລັດ",
             });
             }
+            else{
+              const error = new Error("ບໍ່ພົບວັກຊີນໃນສະຕ໋ອກ");
+                error.status = 402;
+                throw error;
+            }
 
 
 
@@ -299,8 +304,8 @@ module.exports = {
         const t = await db.sequelize.transaction();
     
         try {
-          const { vaccineId,vaccinationSiteId,level } = req.body;
-          const reserveId = req.params.reserveId;
+          const { id,vaccineId,vaccinationSiteId,level } = req.body;
+         
         let vacAmount =1;
         let check = await VaccineSiteStorage.findOne(
           {
@@ -312,11 +317,14 @@ module.exports = {
           },
         {transaction: t,}
         );
+        if(check){
           let reserve = await Reserve.findOne(
             {
               where: {
-                id: reserveId,
-               
+                id: id,
+                vaccineId:vaccineId,
+                vaccinationSiteId:vaccinationSiteId,
+                level:level,
                 status: "Pending",
               },
             },
@@ -324,6 +332,8 @@ module.exports = {
               transaction: t,
             }
           );
+       
+         
     
           if (!reserve || reserve.length === 0) {
             const error = new Error("ບໍ່ພົບຂໍ້ມູນ");
@@ -341,7 +351,7 @@ module.exports = {
             }
           );
     
-
+        }
           await check.update(
             {
               amount: sequelize.literal(`amount + ${vacAmount}`),
