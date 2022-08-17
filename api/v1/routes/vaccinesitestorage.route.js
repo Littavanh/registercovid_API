@@ -9,6 +9,12 @@ router.get(
   controller.getAllVaccineSiteStorage
 ); 
 router.get(
+  "/:vaccineId",
+  [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
+  controller.getSearchVaccineWhereVacsite
+); 
+
+router.get(
   "/:level",
   [authJwt.verifyToken, authJwt.isEmployeeOrAdmin],
   controller.getVacsiteByLevel
