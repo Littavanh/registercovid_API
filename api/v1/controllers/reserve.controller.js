@@ -248,41 +248,69 @@ module.exports = {
               },
             {transaction: t,}
             );
+            let checkAmount = await VaccineSiteStorage.findOne(
+              {
+                where:{
+                  vaccineId:vaccineId,
+                  vaccinationSiteId:vaccinationSiteId,
+                  level:level,
+                  amount: 0,
+                }
+              },
+            {transaction: t,}
+            );
             if(check){
-              let reserve = await Reserve.create(
-                {
-                  userId,
-                  vaccineId,
-                  vaccinationSiteId,
-                  date,
-                  level,
-                },
-                { transaction: t }
-              );
-        
-              if (!reserve) {
-                const error = new Error("ໃສ່ຂໍ້ມູນບໍ່ຄົບ");
+
+              if(!checkAmount){
+                let reserve = await Reserve.create(
+                  {
+                    userId,
+                    vaccineId,
+                    vaccinationSiteId,
+                    date,
+                    level,
+                  },
+                  { transaction: t }
+                );
+          
+                if (!reserve) {
+                  const error = new Error("ໃສ່ຂໍ້ມູນບໍ່ຄົບ");
+                  error.status = 403;
+                  throw error;
+                }
+
+                await check.update(
+                  {
+                      
+                    amount: sequelize.literal(`amount - ${vacAmount}`),
+                  },
+                  { transaction: t }
+                );
+            
+              await t.commit();
+          
+              res.status(201).json({
+                message: "ການຈອງສໍາເລັດ",
+              });
+            }else{
+              const error = new Error("ຈຳນວນວັກຊີນເຫຼືອ 0");
                 error.status = 403;
                 throw error;
+                }
               }
-              await check.update(
-                {
-                  amount: sequelize.literal(`amount - ${vacAmount}`),
-                },
-                { transaction: t }
-              );
-          
-            await t.commit();
-        
-            res.status(201).json({
-              message: "ການຈອງສໍາເລັດ",
-            });
-            }
-            else{
-              const error = new Error("ບໍ່ພົບວັກຊີນໃນສະຕ໋ອກ");
-                error.status = 402;
-                throw error;
-            }
+              else{
+                const error = new Error("ບໍ່ພົບວັກຊີນໃນສະຕ໋ອກ");
+                  error.status = 402;
+                  throw error;
+              }
+             
+
+              
+              
+
+
+
+            
 
 
 
